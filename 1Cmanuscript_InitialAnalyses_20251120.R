@@ -97,6 +97,11 @@ summary(priminf.null)
 summary(priminf.b)
 summary(priminf.a)
 
+priminf.b_res <- simulateResiduals(priminf.b)
+plot(priminf.b_res) 
+
+priminf.a_res <- simulateResiduals(priminf.a)
+plot(priminf.a_res) 
 
 # Model comparison: Initial resistance (infected birds only) ----------------------------------
 
@@ -126,6 +131,16 @@ summary(primresist.a)
 summary(primresist.null)
 summary(primresist.d)
 summary(primresist.c)
+
+
+res = simulateResiduals(primresist.a)
+plot(res, rank = T)
+
+res = simulateResiduals(primresist.d)
+plot(res, rank = T)
+
+res = simulateResiduals(primresist.c)
+plot(res, rank = T)
 
 # try kruskall-wallis to compare resistance by group
 kw <-kruskal.test(quantity7~group, data=pinfected)
