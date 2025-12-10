@@ -1,3 +1,4 @@
+
 # Prepare -----------------------------------------------------------------
 
 # clean off workspace
@@ -130,6 +131,7 @@ secinf.k <- glm(sec_inf~secondary_dose*prim_toleye, data=full, family="binomial"
 
 secinf.l <- glm(sec_inf~secondary_dose+population+sex, data=full, family="binomial") 
 secinf.m <- glm(sec_inf~secondary_dose+population*sex, data=full, family="binomial")
+summary(secinf.m)
 
 secinf.n <- glm(sec_inf~secondary_dose+prim_inf*population, data=full, family="binomial")
 secinf.o <- glm(sec_inf~secondary_dose+prim_inf+population, data=full, family="binomial")
@@ -197,31 +199,28 @@ print(chisq.test(resp_table))
 colors <- c("#648FFF", "#FFB000")
 pinfected <- full %>% filter(prim_inf == "1")
 
-par(mfrow=c(1,1))
-  # mai =c(bottom, left, top, right); mai=c(1,1,0.5,0.2)
+par(mfrow=c(2,1), mai=c(1,1,0.5,0.2))
+  # mai =c(bottom, left, top, right)
 visreg(secinf.aa, "secondary_dose", by="sex", scale="response", partial=F, 
        overlay=TRUE, cex.axis=0.75,  xtrans=log10, ylim=c(-0.1, 1.1),
        xlab="Second MG dose (CCU/mL)", ylab="Second infection probability", rug=F,
        line=list(col=c("#648FFF", "#FFB000")),
        fill=list(col=c("#648FFF80", "#FFB00080")), xaxt="n")
+title("A", adj=0)
 axis(1, at=c(1.477121, 2, 2.477121, 3.845098),
      labels=c("30", "100", "300", "7,000"))
 points(jitter(sec_inf, 0.4) ~ jitter(log10(secondary_dose), 0.8), full, pch = 1, 
-       bg = 'grey', cex = 0.8, col=colors)
+       bg = 'grey', cex = 0.8, col= colors[factor(sex)])
   # doses are 30 (1.477121), 100(2), 300 (2.477121), and 7000 CCU (3.845098)
 
 
 # Figure 3B
-par(mfrow=c(1,1))
 visreg(secinf.aa, "presid", scale="response", partial=F,
        overlay=FALSE, cex.axis=0.75, ylim = c(-0.1,1.1), rug=F, cond=list(prim_inf=1),
        xlab="Initial tolerance", ylab="Second infection probability")
 points(jitter(sec_inf, 0.2) ~ presid, pinfected, pch = 16, bg = 'grey', cex = 0.8)
   #above uses 'pinfected' to overlay points, and 'full' to create confidence interval 
-
-
-
-
+title("B", adj=0)
 
 # Second inoculation susceptibility (initial infected)  --------
 
@@ -347,6 +346,7 @@ secresist_list <- list(secresist.null=secresist.null, secresist.a=secresist.a, s
 
 # model comparison
 aictab(cand.set=secresist_list) 
+
 summary(secresist.j)
 #plot(secresist.j)
 
