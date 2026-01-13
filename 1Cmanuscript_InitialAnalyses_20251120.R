@@ -76,7 +76,7 @@ presid_mod <- glm(I(prim_toleye/6)~prim_resist10, data=pinfected,
 pinfected$presid2 <- residuals.glm(presid_mod,type="response") #store residuals
 pinfected$presid <- pinfected$presid2*(-1) #flip sign of residuals (now most tolerant residuals are positive)
 
-# Model comparison: Initial inoculation susceptibility ------------------
+# List G/ Table S8: Initial inoculation susceptibility ------------------
 
 # create models
 priminf.null <- glm(prim_inf~1, data=master, family="binomial")
@@ -93,17 +93,12 @@ priminf_list <- list(priminf.null=priminf.null, priminf.a=priminf.a, priminf.b=p
 aictab(cand.set=priminf_list)
   # null is top model
 
+# summaries for Table S8
 summary(priminf.null)
 summary(priminf.b)
 summary(priminf.a)
 
-priminf.b_res <- simulateResiduals(priminf.b)
-plot(priminf.b_res) 
-
-priminf.a_res <- simulateResiduals(priminf.a)
-plot(priminf.a_res) 
-
-# Model comparison: Initial resistance (infected birds only) ----------------------------------
+# List H/ Table S9: Initial resistance (infected birds only) ----------------------------------
 
 pinfected$prim_resist10 <- round(pinfected$prim_resist10, 0)
 pinfected$quantity7 <- round(pinfected$quantity7, 0)
@@ -125,22 +120,16 @@ primresist_list <- list(primresist.null=primresist.null, primresist.a=primresist
 
 # model comparison
 aictab(cand.set=primresist_list)
-  # null is in top model set; model a is < 2 dAIC
+  # note that null is in top model set
 
-summary(primresist.a)
-summary(primresist.null)
-summary(primresist.d)
-summary(primresist.c)
-
-
+# check out models < 2 dAICc
+summary(primresist.a) # top model
 res = simulateResiduals(primresist.a)
 plot(res, rank = T)
-
-res = simulateResiduals(primresist.d)
-plot(res, rank = T)
-
-res = simulateResiduals(primresist.c)
-plot(res, rank = T)
+ 
+summary(primresist.null) 
+summary(primresist.d) # lower weight than null
+summary(primresist.c) # lower weight than null
 
 # try kruskall-wallis to compare resistance by group
 kw <-kruskal.test(quantity7~group, data=pinfected)
@@ -148,14 +137,9 @@ kw # X2(3)=11.04, p=0.01
 FSA::dunnTest(quantity7~group, data=pinfected, method="bh")
   # AZ females vary from VA females (Z=3.25, BH adjusted p=0.007)
 
-# Figure S1
-options(scipen = 999)
-ggplot(pinfected, aes(x = group, y = prim_resist)) +
-  geom_jitter(width=0.1, height=0) +theme(legend.position = "right")+
-  labs(x="Group (Sex and population)", y="Initial MG load + 1")+
-  scale_y_continuous(labels=scales::comma)
 
-# Model comparison: Initial pathology (ordinal regression) ----------------------------------------------
+
+# List I/ Table S10: Initial pathology (ordinal regression) ----------------------------------------------
 
 # includes only infected birds
 
@@ -178,23 +162,13 @@ primpath_list <- list(glmo0=glmo0, glmo1=glmo1, glmo2=glmo2, glmo3=glmo3,
 # model comparison
 aictab(cand.set=primpath_list)
 
-# summary
-summary(glmo2)
-summary(glmo3)
-summary(glmo0)
+# check out top models < 2 dAICc
+summary(glmo2) # top model
+summary(glmo3) # more complex than top model
+summary(glmo0) # null
 
-# Figure S2
-group.colors <- c("#648FFF", "#FFB000")
-  # blue female, orange male
 
-ggplot(pinfected, aes(x = population, y = prim_toleye, col=sex)) +
-  geom_jitter(width=0.1, height=0.04) +theme(legend.position = "right")+
-  labs(x="Population", y="Initial eyescore", title="Initial eye score by population and sex",
-       color="Sex")+
-  scale_color_manual(values=group.colors, labels=c("F", "M")) +
-  scale_x_discrete(labels = c('AZ \n(MG-naive)', 'VA \n(MG-endemic)'))
-
-# Model comparison: Initial tolerance -----------------------------------
+# List J/ Table S11: Initial tolerance -----------------------------------
 
 # create models
 primtol.null <- lm(presid~1, data=pinfected)
@@ -211,13 +185,42 @@ primtol_list <- list(primtol.null=primtol.null, primtol.a=primtol.a, primtol.b=p
 # model comparison
 aictab(cand.set=primtol_list)
 
-summary(primtol.a)
+# check out models <2 dAICc
+summary(primtol.a) # top model
 #plot(primtol.a)
 
-summary(primtol.d)
+summary(primtol.d) # more complex than top model
+#plot(primtol.d)
+
 summary(primtol.null)
 
-# Figure S3
+
+
+
+
+# Figure S1 ---------------------------------------------------------------
+
+options(scipen = 999)
+ggplot(pinfected, aes(x = group, y = prim_resist)) +
+  geom_jitter(width=0.1, height=0) +theme(legend.position = "right")+
+  labs(x="Group (Sex and population)", y="Initial MG load + 1",
+       title="Initial resistance by population and sex",)+
+  scale_y_continuous(labels=scales::comma)
+
+# Figure S2 ---------------------------------------------------------------
+
+group.colors <- c("#648FFF", "#FFB000")
+# blue female, orange male
+
+ggplot(pinfected, aes(x = population, y = prim_toleye, col=sex)) +
+  geom_jitter(width=0.1, height=0.04) +theme(legend.position = "right")+
+  labs(x="Population", y="Initial eyescore", title="Initial eye score by population and sex",
+       color="Sex")+
+  scale_color_manual(values=group.colors, labels=c("F", "M")) +
+  scale_x_discrete(labels = c('AZ \n(MG-naive)', 'VA \n(MG-endemic)'))
+
+# Figure S3 ---------------------------------------------------------------
+
 group.colors <- c("#648FFF", "#FFB000")
   # blue female, orange male
 
