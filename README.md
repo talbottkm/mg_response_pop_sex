@@ -24,4 +24,4 @@ sec_inf = infection assignment during second phase (1 = infected, 0 = not succes
 
 1Cmanuscript_Main_20260113.R = R code for analyses for main manuscript, investigating responses to a second inoculation, using only birds that received 750 CCU MG during the initial inoculation (REMOVED)
 
-1Cmanuscript_Main_20260113.R = R code for analyses for main manuscript, investigating responses to a second inoculation, using only birds that received 750 CCU MG during the initial inoculation (same as 20260113 version but with updated figure aesthetics)
+1Cmanuscript_Main_20260612.R = R code for analyses for main manuscript, investigating responses to a second inoculation, using only birds that received 750 CCU MG during the initial inoculation (same as 20260113 version but with updated figure aesthetics)
