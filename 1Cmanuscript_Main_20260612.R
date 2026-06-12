@@ -509,7 +509,7 @@ title("B", adj=0)
 
 # Figure 4 ----------------------------------------------------------------
 
-group.colors <- c( "#E69F00","#009E73")
+group.colors <- c( "#785EF0","#FE6100")
 pred_data <- expand.grid(secondary_dose = seq(from = min(sinfected$secondary_dose, na.rm = T), 
                                               to = max(sinfected$secondary_dose, na.rm = T), by = 30),
                          prim_inf = factor(c('0', '1'), levels = c('0', '1')),
@@ -529,7 +529,7 @@ ggplot(sinfected, aes(x = secondary_dose, y = sec_resist10, fill=prim_inf)) +
   geom_line(data = pred_data, aes(x = secondary_dose, y = pred, col = prim_inf))+
   labs(y= "Second MG load + 1", x = "Second MG dose (CCU/mL)", 
        color="Initial \nsusceptibility") +
-  scale_color_manual(values=group.colors, labels=c("Infected", "Uninfected")) +
+  scale_color_manual(values=group.colors, labels=c("Uninfected", "Infected")) +
   theme(legend.position = "right", 
         panel.border=element_rect(colour="black", fill=NA, linewidth=1.5),
         panel.background=element_blank(),
