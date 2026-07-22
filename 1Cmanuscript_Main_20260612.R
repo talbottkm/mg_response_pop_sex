@@ -548,7 +548,7 @@ ggplot(sinfected, aes(x = secondary_dose, y = sec_resist10, fill=prim_inf)) +
 
 # Figure 5 ----------------------------------------------------------------
 
-labels<-c("Uninfected", "Infected")
+labels<-c("Unsusceptible", "Susceptible")
 
 ggplot(sinfected, aes(x = prim_inf, y = sresid)) +
   labs(y= "Second inoculation tolerance", x = "Initial susceptibility", 
