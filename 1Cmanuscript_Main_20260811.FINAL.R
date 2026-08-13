@@ -487,53 +487,37 @@ summary(sectol2.null)
 
 # Figure 3 ----------------------------------------------------------------
 
-# Figure 3A: probability of second inoculation infection by dose and sex
-sex.colors <- c("#648FFF", "#FFB000")
+# Figure 3A: second infection probability by host sex and second dose (all birds)
+colors <- c("#648FFF", "#FFB000")
 pinfected <- full %>% filter(prim_inf == "1")
-summary(secinf.d)
-print(secinf.d, collapse_table=TRUE, collapse_ci=TRUE)
 
-pred_secinf.d <- predict_response(secinf.d, terms=c("secondary_dose", "sex"))
-pred_secinf.d_plot<-plot(pred_secinf.d, show_residuals=TRUE, jitter=0.03, dot_shape=1,
-                         dot_size=2, alpha=0.4, dot_alpha=1)
-
-pdf("fig3a.pdf", width=6, height=4)
-pred_secinf.d_plot +
-  coord_trans(x="log10")+
-  scale_color_manual(values=sex.colors)+
-  scale_fill_manual(values=sex.colors)+
-  scale_y_continuous(labels=scales::label_number())+
-  labs(x="Second MG dose (CCU/mL)", y="Second infection probability", title=NULL,
-       color="Sex")+
-  theme(legend.position = "inside", 
-        panel.border=element_rect(colour="black", fill=NA, linewidth=0.7),
-        panel.background=element_blank(),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        axis.line.x=element_blank(),
-        axis.line.y=element_blank(),
-        axis.title=element_text(size=12,colour="black"),
-        axis.text.x=element_text(size=10,colour="black"),
-        axis.text.y=element_text(size=10, colour="black"),
-        legend.title = element_text(size=12,colour="black"),
-        legend.text=element_text(size=10,colour="black"),
-        title= element_text(size=12,colour="black"),
-        legend.position.inside=c(0.85, 0.85))+
-  scale_x_continuous(
-    breaks=c(30, 100, 300, 7000),
-    labels=c("30", "100", "300", "7,000"))
-dev.off()
-
+par(mfrow=c(2,1), mai=c(1,1,0.5,0.2))
+# mai =c(bottom, left, top, right)
+visreg(secinf.d, xvar = "secondary_dose", by="sex", scale="response", partial=F, 
+       overlay=TRUE, cex.axis=0.75,   ylim=c(-0.1, 1.1), xlim = c(20, 10000), log = "x",
+       xlab="Second MG dose (CCU/mL)", ylab="Second infection probability", rug=F,
+       line=list(col=c("#648FFF", "#FFB000")),
+       fill=list(col=c("#648FFF80", "#FFB00080")),  xaxt = "n", legend=FALSE) 
+axis(1, at=c(30, 100, 300, 7000), labels=c("30", "100", "300", "7,000"))
+title("A", adj=0)
+legend(legend=c("Female", "Male"), x=1000, y = 1, 
+       fill=c("#648FFF80", "#FFB00080"), bty="n")
+points(jitter(sec_inf, 0.4) ~ jitter(secondary_dose, 2), full[full$secondary_dose == 30,], pch = 1, 
+       bg = 'grey', cex = 0.8, col= colors[factor(sex)])
+points(jitter(sec_inf, 0.4) ~ jitter(secondary_dose, 2), full[full$secondary_dose == 100,], pch = 1, 
+       bg = 'grey', cex = 0.8, col= colors[factor(sex)])
+points(jitter(sec_inf, 0.4) ~ jitter(secondary_dose, 2), full[full$secondary_dose == 300,], pch = 1, 
+       bg = 'grey', cex = 0.8, col= colors[factor(sex)])
+points(jitter(sec_inf, 0.4) ~ jitter(secondary_dose, 2), full[full$secondary_dose == 7000,], pch = 1, 
+       bg = 'grey', cex = 0.8, col= colors[factor(sex)])
 
 # Figure 3B: second infection probability by initial tolerance (initial infected birds only)
-pdf("fig3b.pdf", width=6, height=4)
 visreg(secinf2.w, "presid", scale="response", partial=F,
        overlay=FALSE, cex.axis=0.75, ylim = c(-0.1,1.1), rug=F,
-       xlab="First infection tolerance", ylab="Second infection probability", main=NULL,
+       xlab="First infection tolerance", ylab="Second infection probability",
        line=list(col=c("black")))
 points(jitter(sec_inf, 0.2) ~ presid, pinfected, pch = 1, bg = 'grey', cex = 0.8)
-dev.off()
-
+title("B", adj=0)
 
 
 # Figure 4 ----------------------------------------------------------------
